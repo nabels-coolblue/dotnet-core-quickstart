@@ -1,52 +1,33 @@
-﻿using Structurizr;
+﻿using System.IO;
+using System.Linq;
+using structurizr;
 using Structurizr.Api;
+using Structurizr.Core.Util;
 using Structurizr.Documentation;
+using Structurizr.Util;
 
-namespace structurizr
+namespace Structurizr.Examples
 {
     
     /// <summary>
-    /// This is a simple example of how to get started with Structurizr for .NET.
+    /// This is an example workspace to illustrate the key features of Structurizr,
+    /// based around a fictional Internet Banking System for Big Bank plc.
+    ///
+    /// The live workspace is available to view at https://structurizr.com/share/36141
     /// </summary>
-    class Program
+    public class Program
     {
-
-        private const long WorkspaceId = 1234;
-        private const string ApiKey = "key";
-        private const string ApiSecret = "secret";
+        private const long WorkspaceId = 37700;
+        private const string ApiKey = "";
+        private const string ApiSecret = "";
 
         static void Main(string[] args)
         {
-            // a Structurizr workspace is the wrapper for a software architecture model, views and documentation
-            Workspace workspace = new Workspace("Getting Started", "This is a model of my software system.");
-            Model model = workspace.Model;
-
-            // add some elements to your software architecture model
-            Person user = model.AddPerson("User", "A user of my software system.");
-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
-            user.Uses(softwareSystem, "Uses");
-
-            // define some views (the diagrams you would like to see)
-            ViewSet views = workspace.Views;
-            SystemContextView contextView = views.CreateSystemContextView(softwareSystem, "SystemContext",
-                "An example of a System Context diagram.");
-            contextView.PaperSize = PaperSize.A5_Landscape;
-            contextView.AddAllSoftwareSystems();
-            contextView.AddAllPeople();
-
-            // add some documentation
-            StructurizrDocumentationTemplate template = new StructurizrDocumentationTemplate(workspace);
-            template.AddContextSection(softwareSystem, Format.Markdown,
-                "Here is some context about the software system...\n" +
-                "\n" +
-                "![](embed:SystemContext)");
-
-            // add some styling
-            Styles styles = views.Configuration.Styles;
-            styles.Add(new ElementStyle(Tags.SoftwareSystem) { Background = "#1168bd", Color = "#ffffff" });
-            styles.Add(new ElementStyle(Tags.Person) { Background = "#08427b", Color = "#ffffff", Shape = Shape.Person });
-
+            var workspace = BigBankPlc.Create(WorkspaceId, ApiKey, ApiSecret);
             UploadWorkspaceToStructurizr(workspace);
+            
+            var workspace2 = ContextDiagram.Create(WorkspaceId, ApiKey, ApiSecret);
+            //UploadWorkspaceToStructurizr(workspace2);
         }
 
         private static void UploadWorkspaceToStructurizr(Workspace workspace) {
